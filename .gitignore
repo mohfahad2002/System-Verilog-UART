@@ -1,0 +1,41 @@
+# OS artifacts
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor/IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Generic logs/temp files
+*.log
+*.tmp
+*.bak
+
+# Simulation waveforms/dumps
+*.vcd
+*.wlf
+*.wdb
+*.fsdb
+*.trn
+
+# Common simulator artifacts (ModelSim/Questa/others)
+work/
+vsim.wlf
+transcript
+modelsim.ini
+*.jou
+*.pb
+
+# Build/output directories
+build/
+out/
+sim/
+obj_dir/
+
+# Project-specific generated/top file
+top_virtex_6.v
+
