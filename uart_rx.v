@@ -62,6 +62,7 @@ always @(posedge clk or negedge rst_n) begin
         rx_data <= '0;
         done <= '0;
         busy <= '0;
+        data_out <= '0;
     end
     else begin
         done <= '0;
@@ -74,7 +75,9 @@ always @(posedge clk or negedge rst_n) begin
                             state <= RECEIVE;
                             busy <= '1;
                         end
-                        oversample_cnt <= oversample_cnt + 1;   
+                        else begin
+                            oversample_cnt <= oversample_cnt + 1;
+                        end   
                     end
                     else begin
                         oversample_cnt <= '0;
@@ -82,21 +85,23 @@ always @(posedge clk or negedge rst_n) begin
                 end
                 RECEIVE: begin
                     if (oversample_cnt == 'd15) begin
+                        rx_data[bit_index] <= rx_in;
                         if (bit_index == 'd7) begin
                             bit_index <= '0;
                             oversample_cnt <= '0;
                             state <= STOP;
                         end
                         else begin
-                            rx_data[bit_index] = rx_in;
                             bit_index <= bit_index + 1;
                             oversample_cnt <= '0;
                         end
                     end
-                    oversample_cnt <= oversample_cnt + 1;
+                    else begin
+                        oversample_cnt <= oversample_cnt + 1;
+                    end
                 end
                 STOP: begin
-                    if (oversample_cnt == 'd15) begin
+                    if (oversample_cnt == 'd8) begin
                         done <= '1;
                         busy <= '0;
                         oversample_cnt <= '0;
