@@ -11,7 +11,7 @@ module uart #(
     output wire rx_done,
     output wire [7:0] rx_data_out,
 
-    output wire rx_baudclk
+    output wire rx_baudclk,
 
     input wire [7:0] tx_data_in,
     input wire tx_send,
@@ -22,6 +22,8 @@ module uart #(
 
     output wire tx_baudclk
 );
+
+localparam integer CLKS_PER_BIT = (CLK_FREQ + (BAUD_RATE*8)) / (BAUD_RATE*16); 
 
 reg [15:0] clk_counter;   // counts system clocks
 reg baud_pulse;

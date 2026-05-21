@@ -14,7 +14,7 @@ logic baudclk;
 
 logic [7:0] test_data = 8'b11101110;
 
-uart_rx #(
+uart #(
     .CLK_FREQ(200_000_000),  // System clock frequency
     .BAUD_RATE(115200)        // UART baud rate
 ) rx_inst(
@@ -22,11 +22,11 @@ uart_rx #(
     .rst_n(rst_n),
     .rx_in(rx_in),
 
-    .busy(busy),
-    .done(done),
-    .data_out(data_out),
+    .rx_busy(busy),
+    .rx_done(done),
+    .rx_data_out(data_out),
 
-    .baudclk(baudclk)
+    .rx_baudclk(baudclk)
 );
 
 initial begin
