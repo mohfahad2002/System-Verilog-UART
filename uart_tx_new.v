@@ -6,6 +6,7 @@ module uart_tx #(
     input  wire       rst_n,     // Active-low reset
     input  wire [7:0] data_in,   // Byte to transmit
     input  wire       send,      // Trigger transmission
+    input  wire       baud16_pulse,
 
     output reg        tx_out,    // UART TX line
     output reg        busy,      // High while transmitting
@@ -37,21 +38,21 @@ module uart_tx #(
     // --------------------------------------------
     // 16x Baud clock generation (pulse for 1 clk)
     // --------------------------------------------
-    reg baud16_pulse;
+    // reg baud16_pulse;
     assign baud16_clk = baud16_pulse;
 
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            clk_counter   <= 0;
-            baud16_pulse  <= 0;
-        end else if (clk_counter == CLKS_PER_BIT-1) begin
-            clk_counter  <= 0;
-            baud16_pulse <= 1; // single-cycle pulse
-        end else begin
-            clk_counter  <= clk_counter + 1;
-            baud16_pulse <= 0;
-        end
-    end
+    // always @(posedge clk or negedge rst_n) begin
+    //     if (!rst_n) begin
+    //         clk_counter   <= 0;
+    //         baud16_pulse  <= 0;
+    //     end else if (clk_counter == CLKS_PER_BIT-1) begin
+    //         clk_counter  <= 0;
+    //         baud16_pulse <= 1; // single-cycle pulse
+    //     end else begin
+    //         clk_counter  <= clk_counter + 1;
+    //         baud16_pulse <= 0;
+    //     end
+    // end
 
     // --------------------------------------------
     // UART FSM using oversampled clock

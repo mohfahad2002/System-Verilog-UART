@@ -5,12 +5,13 @@ module uart_rx #(
     input wire clk,
     input wire rst_n,
     input reg rx_in,
+    input reg baud_pulse,
 
     output reg busy,
     output reg done,
     output reg [7:0] data_out,
 
-    output wire baudclk
+    input wire baudclk
 );
 
 // --------------------------------------------
@@ -29,25 +30,25 @@ localparam STOP = 2'b10;
 // Reg for FSM
 reg [1:0] state;
 
-reg [15:0] clk_counter;   // counts system clocks
-reg baud_pulse;
+// reg [15:0] clk_counter;   // counts system clocks
+// reg baud_pulse;
 
-always @(posedge clk or negedge rst_n) begin
-    if (!rst_n) begin
-        clk_counter <= '0;
-        baud_pulse <= '0;
-    end
-    else begin
-        if (clk_counter == CLKS_PER_BIT - 1) begin
-            clk_counter <= '0;
-            baud_pulse <= '1;
-        end
-        else begin
-            baud_pulse <= '0;
-            clk_counter <= clk_counter + 1;
-        end
-    end
-end
+// always @(posedge clk or negedge rst_n) begin
+//     if (!rst_n) begin
+//         clk_counter <= '0;
+//         baud_pulse <= '0;
+//     end
+//     else begin
+//         if (clk_counter == CLKS_PER_BIT - 1) begin
+//             clk_counter <= '0;
+//             baud_pulse <= '1;
+//         end
+//         else begin
+//             baud_pulse <= '0;
+//             clk_counter <= clk_counter + 1;
+//         end
+//     end
+// end
 
 reg [3:0]  oversample_cnt; // counts 0..15 (16×)
 reg [2:0]  bit_index;     // 0..7 data bits
