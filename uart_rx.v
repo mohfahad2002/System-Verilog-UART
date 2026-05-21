@@ -101,6 +101,7 @@ always @(posedge clk or negedge rst_n) begin
                         busy <= '0;
                         oversample_cnt <= '0;
                         state <= IDLE;
+                        data_out <= rx_data;
                     end
 
                     oversample_cnt <= oversample_cnt + 1;
@@ -110,4 +111,5 @@ always @(posedge clk or negedge rst_n) begin
     end
 end
 
+assign baudclk = baud_pulse;
 endmodule
