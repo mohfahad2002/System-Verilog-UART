@@ -20,7 +20,8 @@ module uart #(
     output wire tx_busy,
     output wire tx_done,
 
-    output wire tx_baudclk
+    output wire tx_baudclk,
+    output wire tx_bit_transition
 );
 
 localparam integer CLKS_PER_BIT = (CLK_FREQ + (BAUD_RATE*8)) / (BAUD_RATE*16); 
@@ -69,12 +70,13 @@ uart_tx #(
     .rst_n(rst_n),     // Active-low reset
     .data_in(tx_data_in),   // Byte to transmit
     .send(tx_send),      // Trigger transmission
-    .baud16_pulse(baud_pulse)
+    .baud16_pulse(baud_pulse),
 
     .tx_out(tx_out),    // UART TX line
     .busy(tx_busy),      // High while transmitting
     .done(tx_done),      // Pulse high when transmission done
 
+    .bit_transition(tx_bit_transition),
     .baud16_clk(tx_baudclk) //Pulse after BAUDRATE/16 seconds have passed. For debugging
 );
 

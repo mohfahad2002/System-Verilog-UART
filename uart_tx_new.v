@@ -12,6 +12,7 @@ module uart_tx #(
     output reg        busy,      // High while transmitting
     output reg        done,      // Pulse high when transmission done
 
+    output reg        bit_transition,
     output            baud16_clk //Pulse after BAUDRATE/16 seconds have passed. For debugging
 );
 
@@ -67,6 +68,7 @@ module uart_tx #(
             bit_index    <= 0;
             oversample_cnt <= 0;
             tx_data      <= 0;
+            bit_transition <= 0;
         end else begin
             done <= 0; // pulse once
             if (baud16_pulse) begin
@@ -85,18 +87,20 @@ module uart_tx #(
                     START: begin
                         tx_out <= 1'b0; // start bit
                         oversample_cnt <= oversample_cnt + 1;
-                        if (oversample_cnt == 15) begin
+                        if (oversample_cnt == 'd15) begin
                             oversample_cnt <= 0;
                             state <= DATA;
                             bit_index <= 0;
+                            bit_transition <= ~bit_transition;
                         end
                     end
 
                     DATA: begin
                         tx_out <= tx_data[bit_index];
                         oversample_cnt <= oversample_cnt + 1;
-                        if (oversample_cnt == 15) begin
+                        if (oversample_cnt == 'd15) begin
                             oversample_cnt <= 0;
+                            bit_transition <= ~bit_transition;
                             if (bit_index == 7) begin
                                 state <= STOP;
                             end else begin
@@ -108,11 +112,12 @@ module uart_tx #(
                     STOP: begin
                         tx_out <= 1'b1; // stop bit
                         oversample_cnt <= oversample_cnt + 1;
-                        if (oversample_cnt == 15) begin
+                        if (oversample_cnt == 'd15) begin
                             oversample_cnt <= 0;
                             state <= IDLE;
                             busy  <= 0;
                             done  <= 1;
+                            bit_transition <= ~bit_transition;
                         end
                     end
 
