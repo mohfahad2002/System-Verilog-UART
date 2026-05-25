@@ -49,6 +49,11 @@ reg [6:0] byte_count; //Counting the number of packets sent
 reg [8:0] byte_count_start; //Used to find the starting index of data to send
 reg [DATA_SIZE:0] in_data_buffer;
 
+
+//The state machine is used to create byte-sized chunks out of the entire packet and send it over UART sequentially. 
+//byte_count counts the number of bytes that have been transmitted.
+//byte_count_start is responsible for indexing the data buffer and obtaining a byte for transmission. 
+//byte_count increments by 1 for each byte sent. byte_count_start increments by 8 after every byte transmission. 
 always @(posedge clk) begin
     if (!rst_n) begin
         state <= IDLE;
