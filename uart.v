@@ -31,16 +31,16 @@ reg baud_pulse;
 
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
-        clk_counter <= '0;
-        baud_pulse <= '0;
+        clk_counter <= 'b0;
+        baud_pulse <= 'b0;
     end
     else begin
         if (clk_counter == CLKS_PER_BIT - 1) begin
-            clk_counter <= '0;
-            baud_pulse <= '1;
+            clk_counter <= 'b0;
+            baud_pulse <= 'b1;
         end
         else begin
-            baud_pulse <= '0;
+            baud_pulse <= 'b0;
             clk_counter <= clk_counter + 1;
         end
     end

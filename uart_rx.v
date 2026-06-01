@@ -4,8 +4,8 @@ module uart_rx #(
 )(
     input wire clk,
     input wire rst_n,
-    input reg rx_in,
-    input reg baud_pulse,
+    input wire rx_in,
+    input wire baud_pulse,
 
     output reg busy,
     output reg done,
@@ -58,43 +58,43 @@ reg [7:0]  rx_data;
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         state <= IDLE;
-        oversample_cnt <= '0;
-        bit_index <= '0;
-        rx_data <= '0;
-        done <= '0;
-        busy <= '0;
-        data_out <= '0;
+        oversample_cnt <= 'b0;
+        bit_index <= 'b0;
+        rx_data <= 'b0;
+        done <= 'b0;
+        busy <= 'b0;
+        data_out <= 'b0;
     end
     else begin
-        done <= '0;
+        done <= 'b0;
         if (baud_pulse) begin
             case (state)
                 IDLE: begin
                     if (!rx_in) begin
                         if (oversample_cnt == 'd8) begin
-                            oversample_cnt <= '0;
+                            oversample_cnt <= 'b0;
                             state <= RECEIVE;
-                            busy <= '1;
+                            busy <= 'b1;
                         end
                         else begin
                             oversample_cnt <= oversample_cnt + 1;
                         end   
                     end
                     else begin
-                        oversample_cnt <= '0;
+                        oversample_cnt <= 'b0;
                     end
                 end
                 RECEIVE: begin
                     if (oversample_cnt == 'd15) begin
                         rx_data[bit_index] <= rx_in;
                         if (bit_index == 'd7) begin
-                            bit_index <= '0;
-                            oversample_cnt <= '0;
+                            bit_index <= 'b0;
+                            oversample_cnt <= 'b0;
                             state <= STOP;
                         end
                         else begin
                             bit_index <= bit_index + 1;
-                            oversample_cnt <= '0;
+                            oversample_cnt <= 'b0;
                         end
                     end
                     else begin
@@ -103,9 +103,9 @@ always @(posedge clk or negedge rst_n) begin
                 end
                 STOP: begin
                     if (oversample_cnt == 'd8) begin
-                        done <= '1;
-                        busy <= '0;
-                        oversample_cnt <= '0;
+                        done <= 'b1;
+                        busy <= 'b0;
+                        oversample_cnt <= 'b0;
                         state <= IDLE;
                         data_out <= rx_data;
                     end
