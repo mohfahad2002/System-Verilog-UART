@@ -10,32 +10,42 @@ module packet_logging #(
     input start,
 
     input [DATA_SIZE:0] packet_data,
+    input rx_in,
     
     output reg complete,
     output tx_out,
+    output rx_done,
+    output rx_busy,
+    output [DATA_SIZE:0] rx_out,
 
     output [2:0] state_probe,
     output [6:0] byte_count_probe,
-    output [8:0] byte_count_start_probe,
-
-    output [4:0] tenk,
-    output [4:0] thousands,
-    output [4:0] hundreds,
-    output [4:0] tens,
-    output [4:0] units
+    output [8:0] byte_count_start_probe
 );
 
 reg transmission_send;
 reg [7:0] tx_data;
 wire transmission_done;
 
-uart_tx tx_inst(
-    .data_in(tx_data),
+
+uart #(
+    .CLK_FREQ(CLK_FREQ),  // System clock frequency
+    .BAUD_RATE(BAUD_RATE)        // UART baud rate
+) rx_inst(
     .clk(clk),
     .rst_n(rst_n),
-    .send(transmission_send),
-    .done(transmission_done),
-    .tx_out(tx_out)
+    // .rx_in(rx_in),
+
+    // .rx_busy(rx_busy),
+    // .rx_done(rx_done),
+    // .rx_data_out(data_out),
+
+    .tx_data_in(tx_data),
+    .tx_send(transmission_send),
+
+    .tx_out(tx_out),
+    .tx_done(transmission_done)
+
 );
 
 
